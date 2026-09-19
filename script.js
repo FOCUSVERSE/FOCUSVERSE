@@ -9,7 +9,7 @@ const CONFIG = {
 
     githubRepo: "FOCUSVERSE",
 
-    androidFile: "focusverse.apk",
+    androidFile: "app-debug.apk",
 
     windowsFile: "focusverse-windows.zip"
 
