@@ -1,218 +1,377 @@
 const CONFIG = {
+
     androidUrl:
         "https://github.com/panditji11029-hash/FOCUSVERSE/releases/download/v1.0.0/app-debug.apk",
 
     windowsUrl:
-        "https://github.com/panditji11029-hash/FOCUSVERSE/releases/latest",
+        "https://github.com/panditji11029-hash/FOCUSVERSE/releases/download/v1.0.0/focusverse-windows.zip",
 
     version:
         "v1.0.0"
 };
 
 
-/* ===============================
-   DOWNLOAD BUTTONS
+/* ================================
+   DOWNLOAD LINKS
 ================================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    const androidButton =
-        document.getElementById("android-download");
-
-    const windowsButton =
-        document.getElementById("windows-download");
-
-    const versionStatus =
-        document.getElementById("version-status");
+        const androidButton =
+            document.getElementById(
+                "android-download"
+            );
 
 
-    /* ANDROID */
+        const windowsButton =
+            document.getElementById(
+                "windows-download"
+            );
 
-    if (androidButton) {
 
-        androidButton.href =
-            CONFIG.androidUrl;
+        const versionStatus =
+            document.getElementById(
+                "version-status"
+            );
 
-        androidButton.removeAttribute("target");
 
-        androidButton.removeAttribute("onclick");
+        if (androidButton) {
 
-        androidButton.setAttribute(
-            "download",
-            ""
-        );
+            androidButton.href =
+                CONFIG.androidUrl;
+
+            androidButton.removeAttribute(
+                "target"
+            );
+
+            androidButton.removeAttribute(
+                "onclick"
+            );
+
+            androidButton.setAttribute(
+                "download",
+                ""
+            );
+
+        }
+
+
+        if (windowsButton) {
+
+            windowsButton.href =
+                CONFIG.windowsUrl;
+
+            windowsButton.removeAttribute(
+                "target"
+            );
+
+            windowsButton.removeAttribute(
+                "onclick"
+            );
+
+        }
+
+
+        if (versionStatus) {
+
+            versionStatus.textContent =
+                `FOCUSVERSE ${CONFIG.version} • Android + Windows available`;
+
+        }
+
+
+        initializeRevealAnimations();
+
+        initializeReactions();
+
+        initializeSmoothScroll();
+
+        initializeCursor();
+
     }
+);
 
 
-    /* WINDOWS */
-
-    if (windowsButton) {
-
-        windowsButton.href =
-            CONFIG.windowsUrl;
-
-        windowsButton.removeAttribute("onclick");
-    }
-
-
-    /* VERSION STATUS */
-
-    if (versionStatus) {
-
-        versionStatus.textContent =
-            `FOCUSVERSE ${CONFIG.version} • Android download available`;
-    }
-
-});
-
-
-/* ===============================
+/* ================================
    CURSOR GLOW
 ================================ */
 
-const cursorGlow =
-    document.querySelector(".cursor-glow");
+function initializeCursor() {
+
+    const cursorGlow =
+        document.querySelector(
+            ".cursor-glow"
+        );
 
 
-if (cursorGlow) {
+    if (!cursorGlow) {
+        return;
+    }
 
-    document.addEventListener("mousemove", (event) => {
 
-        cursorGlow.style.left =
-            `${event.clientX}px`;
+    document.addEventListener(
+        "mousemove",
+        (event) => {
 
-        cursorGlow.style.top =
-            `${event.clientY}px`;
+            cursorGlow.style.left =
+                `${event.clientX}px`;
 
-    });
+            cursorGlow.style.top =
+                `${event.clientY}px`;
+
+        }
+    );
 
 }
 
 
-/* ===============================
-   SCROLL REVEAL
+/* ================================
+   REVEAL ANIMATIONS
 ================================ */
 
-const revealElements =
-    document.querySelectorAll(
-        ".feature-card, .section-heading, .world-copy, .universe, .community-preview, .platform-card"
-    );
+function initializeRevealAnimations() {
+
+    const revealElements =
+        document.querySelectorAll(
+            ".feature-card, " +
+            ".section-heading, " +
+            ".world-copy, " +
+            ".universe, " +
+            ".community-preview, " +
+            ".platform-card, " +
+            ".download-note"
+        );
 
 
-if ("IntersectionObserver" in window) {
+    if (!revealElements.length) {
+        return;
+    }
 
-    const observer =
-        new IntersectionObserver(
-            (entries) => {
 
-                entries.forEach((entry) => {
+    if (
+        "IntersectionObserver"
+        in window
+    ) {
 
-                    if (entry.isIntersecting) {
+        const observer =
+            new IntersectionObserver(
+                (entries) => {
 
-                        entry.target.classList.add(
-                            "visible"
-                        );
+                    entries.forEach(
+                        (entry) => {
 
-                        observer.unobserve(
-                            entry.target
-                        );
+                            if (
+                                entry.isIntersecting
+                            ) {
 
-                    }
+                                entry.target.classList.add(
+                                    "visible"
+                                );
 
-                });
+                                observer.unobserve(
+                                    entry.target
+                                );
 
-            },
-            {
-                threshold: 0.12
+                            }
+
+                        }
+                    );
+
+                },
+                {
+                    threshold: 0.12
+                }
+            );
+
+
+        revealElements.forEach(
+            (element) => {
+
+                element.classList.add(
+                    "reveal"
+                );
+
+                observer.observe(
+                    element
+                );
+
             }
         );
 
+    } else {
 
-    revealElements.forEach((element) => {
+        revealElements.forEach(
+            (element) => {
 
-        element.classList.add(
-            "reveal"
+                element.classList.add(
+                    "visible"
+                );
+
+            }
         );
 
-        observer.observe(
-            element
-        );
-
-    });
-
-} else {
-
-    revealElements.forEach((element) => {
-
-        element.classList.add(
-            "visible"
-        );
-
-    });
+    }
 
 }
 
 
-/* ===============================
+/* ================================
    SMOOTH NAVIGATION
 ================================ */
 
-document
-    .querySelectorAll('a[href^="#"]')
-    .forEach((link) => {
+function initializeSmoothScroll() {
 
-        link.addEventListener("click", (event) => {
+    document
+        .querySelectorAll(
+            'a[href^="#"]'
+        )
+        .forEach(
+            (link) => {
 
-            const targetId =
-                link.getAttribute("href");
+                link.addEventListener(
+                    "click",
+                    (event) => {
 
-            if (
-                !targetId ||
-                targetId === "#"
-            ) {
-                return;
-            }
-
-
-            const target =
-                document.querySelector(
-                    targetId
-                );
+                        const targetId =
+                            link.getAttribute(
+                                "href"
+                            );
 
 
-            if (target) {
-
-                event.preventDefault();
-
-                target.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-
-            }
-
-        });
-
-    });
+                        if (
+                            !targetId ||
+                            targetId === "#"
+                        ) {
+                            return;
+                        }
 
 
-/* ===============================
-   COMMUNITY REACTION ANIMATION
-================================ */
+                        const target =
+                            document.querySelector(
+                                targetId
+                            );
 
-document
-    .querySelectorAll(".reactions button")
-    .forEach((button) => {
 
-        button.addEventListener(
-            "click",
-            () => {
+                        if (target) {
 
-                button.classList.toggle(
-                    "active"
+                            event.preventDefault();
+
+                            target.scrollIntoView(
+                                {
+                                    behavior:
+                                        "smooth",
+
+                                    block:
+                                        "start"
+                                }
+                            );
+
+                        }
+
+                    }
                 );
 
             }
         );
 
-    });
+}
+
+
+/* ================================
+   COMMUNITY REACTIONS
+================================ */
+
+function initializeReactions() {
+
+    document
+        .querySelectorAll(
+            ".reactions button"
+        )
+        .forEach(
+            (button) => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        button.classList.toggle(
+                            "active"
+                        );
+
+
+                        const count =
+                            button.querySelector(
+                                "span"
+                            );
+
+
+                        if (!count) {
+                            return;
+                        }
+
+
+                        const current =
+                            Number(
+                                count.textContent
+                            );
+
+
+                        if (
+                            Number.isNaN(
+                                current
+                            )
+                        ) {
+                            return;
+                        }
+
+
+                        if (
+                            button.classList.contains(
+                                "active"
+                            )
+                        ) {
+
+                            count.textContent =
+                                current + 1;
+
+                        } else {
+
+                            count.textContent =
+                                Math.max(
+                                    0,
+                                    current - 1
+                                );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* ================================
+   KEYBOARD ACCESSIBILITY
+================================ */
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            document
+                .activeElement
+                ?.blur();
+
+        }
+
+    }
+);
