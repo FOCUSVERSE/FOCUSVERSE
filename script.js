@@ -5,7 +5,7 @@ const CONFIG = {
      * Change these two values.
      */
 
-    githubOwner: "YOUR_GITHUB_USERNAME",
+    githubOwner: "panditji11029-hash",
 
     githubRepo: "FOCUSVERSE",
 
