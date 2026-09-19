@@ -1,0 +1,22 @@
+{
+    "version": "1.0.0",
+    "build": 1,
+    "minimumBuild": 1,
+    "android": {
+        "version": "1.0.0",
+        "build": 1,
+        "url": "https://github.com/YOUR_GITHUB_USERNAME/FOCUSVERSE/releases/latest"
+    },
+    "windows": {
+        "version": "1.0.0",
+        "build": 1,
+        "url": "https://github.com/YOUR_GITHUB_USERNAME/FOCUSVERSE/releases/latest"
+    },
+    "releaseNotes": [
+        "Initial FOCUSVERSE release.",
+        "Focus timer.",
+        "Missions and XP.",
+        "World progression.",
+        "Profile system."
+    ]
+}
