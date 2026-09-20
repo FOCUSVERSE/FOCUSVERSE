@@ -1,8 +1,16 @@
 {
-  "latestVersion":"1.1.0",
-  "minimumVersion":"1.1.0",
-  "downloadUrl":"https://github.com/panditji11029-hash/FOCUSVERSE/releases/download/v1.1.0/app-release.apk",
-  "windowsUrl":"https://github.com/panditji11029-hash/FOCUSVERSE/releases/tag/v1.1.0",
-  "releaseUrl":"https://github.com/panditji11029-hash/FOCUSVERSE/releases/tag/v1.1.0",
-  "releaseNotes":["Community with posts, reactions, comments and replies","Friends and real-time friend requests","Real-time Firestore social updates","Focus sounds and custom sound support","World progression, XP, missions and streaks"]
+  "latestVersion": "1.0.0",
+  "minimumVersion": "1.0.0",
+  "downloadUrl": "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-v1.0.0.apk",
+  "windowsUrl": "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-Windows-v1.0.0.zip",
+  "releaseUrl": "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/tag/v1.0.0",
+  "releaseNotes": [
+    "FOCUSVERSE initial release",
+    "Focus timer and productivity system",
+    "XP, levels, missions and streaks",
+    "Focus sounds",
+    "Virtual world progression",
+    "Focus companion",
+    "Community, friends and real-time chat"
+  ]
 }
