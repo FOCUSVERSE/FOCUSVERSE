@@ -1,16 +1,23 @@
 {
   "latestVersion": "1.0.0",
   "minimumVersion": "1.0.0",
-  "downloadUrl": "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-v1.0.0.apk",
-  "windowsUrl": "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-Windows-v1.0.0.zip",
-  "releaseUrl": "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/tag/v1.0.0",
+
+  "android": "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-v1.0.0.apk",
+
+  "windows": "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-Windows-v1.0.0.zip",
+
   "releaseNotes": [
-    "FOCUSVERSE initial release",
-    "Focus timer and productivity system",
-    "XP, levels, missions and streaks",
+    "FOCUSVERSE v1.0.0",
+    "Focus timer and deep-work system",
+    "XP and level progression",
+    "Missions and streaks",
     "Focus sounds",
-    "Virtual world progression",
-    "Focus companion",
-    "Community, friends and real-time chat"
+    "World progression",
+    "Companion evolution",
+    "Friends and community",
+    "Posts and reactions",
+    "Comments and replies",
+    "Real-time messaging",
+    "Android and Windows support"
   ]
 }
