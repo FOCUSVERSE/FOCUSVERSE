@@ -1,306 +1,598 @@
-const FALLBACK = {
-  latestVersion: "1.0.0",
-
-  downloadUrl:
-    "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-v1.0.0.apk",
-
-  windowsUrl:
-    "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-Windows-v1.0.0.zip",
-
-  releaseUrl:
-    "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/tag/v1.0.0"
-};
+"use strict";
 
 
-// ---------------------------------------------------------
-// CANVAS SPACE BACKGROUND
-// ---------------------------------------------------------
+/* ==========================================
+   FOCUSVERSE CINEMATIC ENGINE
+========================================== */
 
-const canvas = document.getElementById("spaceCanvas");
+document.addEventListener("DOMContentLoaded", () => {
 
-if (canvas) {
-  const ctx = canvas.getContext("2d");
+  initStars();
 
-  let width = 0;
-  let height = 0;
+  initCursor();
 
-  const particles = [];
+  initReveal();
 
-  const PARTICLE_COUNT = 120;
+  initParallax();
 
-  function resizeCanvas() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
+  initSmoothScroll();
+
+  initDownloads();
+
+  initStageInteraction();
+
+  initMagneticButtons();
+
+});
+
+
+/* ==========================================
+   SPACE PARTICLES
+========================================== */
+
+function initStars() {
+
+  const canvas =
+    document.getElementById("space");
+
+  if (!canvas) return;
+
+  const ctx =
+    canvas.getContext("2d");
+
+  let width;
+  let height;
+
+  let stars = [];
+
+  const reduced =
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+
+  function resize() {
+
+    width =
+      window.innerWidth;
+
+    height =
+      window.innerHeight;
+
+    const dpr =
+      Math.min(
+        window.devicePixelRatio || 1,
+        2
+      );
+
+    canvas.width =
+      width * dpr;
+
+    canvas.height =
+      height * dpr;
+
+    canvas.style.width =
+      width + "px";
+
+    canvas.style.height =
+      height + "px";
+
+    ctx.setTransform(
+      dpr,
+      0,
+      0,
+      dpr,
+      0,
+      0
+    );
+
+
+    stars =
+      Array.from(
+        {
+          length:
+            Math.min(
+              180,
+              Math.floor(
+                width * height / 9000
+              )
+            )
+        },
+        () => ({
+          x:Math.random() * width,
+          y:Math.random() * height,
+          r:Math.random() * 1.4 + .2,
+          a:Math.random() * .55 + .1,
+          s:Math.random() * .2 + .02
+        })
+      );
+
   }
 
-  function createParticle() {
-    return {
-      x: Math.random() * width,
-      y: Math.random() * height,
-      radius: Math.random() * 1.6 + 0.2,
-      speed: Math.random() * 0.25 + 0.05,
-      drift: Math.random() * 0.5 - 0.25,
-      alpha: Math.random() * 0.7 + 0.15
-    };
-  }
 
-  function initializeParticles() {
-    particles.length = 0;
+  function draw() {
 
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push(createParticle());
-    }
-  }
+    ctx.clearRect(
+      0,
+      0,
+      width,
+      height
+    );
 
-  function drawParticles() {
-    ctx.clearRect(0, 0, width, height);
 
-    for (const particle of particles) {
-      particle.y -= particle.speed;
-      particle.x += particle.drift * 0.08;
-
-      if (particle.y < -10) {
-        particle.y = height + 10;
-      }
-
-      if (particle.x < -10) {
-        particle.x = width + 10;
-      }
-
-      if (particle.x > width + 10) {
-        particle.x = -10;
-      }
+    stars.forEach(star => {
 
       ctx.beginPath();
 
       ctx.arc(
-        particle.x,
-        particle.y,
-        particle.radius,
+        star.x,
+        star.y,
+        star.r,
         0,
         Math.PI * 2
       );
 
       ctx.fillStyle =
-        `rgba(145, 255, 0, ${particle.alpha})`;
+        `rgba(170,255,80,${star.a})`;
 
       ctx.fill();
+
+
+      if (!reduced) {
+
+        star.y -= star.s;
+
+        if (star.y < -5) {
+
+          star.y =
+            height + 5;
+
+          star.x =
+            Math.random() * width;
+        }
+
+      }
+
+    });
+
+
+    if (!reduced) {
+
+      requestAnimationFrame(
+        draw
+      );
+
     }
 
-    requestAnimationFrame(drawParticles);
   }
 
-  resizeCanvas();
-  initializeParticles();
-  drawParticles();
 
-  window.addEventListener("resize", () => {
-    resizeCanvas();
-    initializeParticles();
-  });
+  window.addEventListener(
+    "resize",
+    resize
+  );
+
+
+  resize();
+
+  draw();
 }
 
 
-// ---------------------------------------------------------
-// SMOOTH SCROLL
-// ---------------------------------------------------------
+/* ==========================================
+   CURSOR
+========================================== */
 
-document.querySelectorAll('a[href^="#"]').forEach((link) => {
+function initCursor() {
 
-  link.addEventListener("click", (event) => {
+  const cursor =
+    document.getElementById(
+      "cursor"
+    );
 
-    const targetId = link.getAttribute("href");
-
-    if (!targetId || targetId === "#") {
-      return;
-    }
-
-    const target = document.querySelector(targetId);
-
-    if (!target) {
-      return;
-    }
-
-    event.preventDefault();
-
-    target.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-
-  });
-
-});
+  if (!cursor) return;
 
 
-// ---------------------------------------------------------
-// REVEAL ANIMATIONS
-// ---------------------------------------------------------
+  if (
+    window.matchMedia(
+      "(pointer:coarse)"
+    ).matches
+  ) {
 
-const revealElements =
-  document.querySelectorAll(".section-reveal");
+    cursor.style.display =
+      "none";
 
-if ("IntersectionObserver" in window) {
+    return;
+  }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
 
-      entries.forEach((entry) => {
+  window.addEventListener(
+    "mousemove",
+    event => {
 
-        if (entry.isIntersecting) {
+      cursor.style.left =
+        event.clientX + "px";
 
-          entry.target.classList.add("visible");
+      cursor.style.top =
+        event.clientY + "px";
 
-          observer.unobserve(entry.target);
-        }
-
-      });
-
-    },
-    {
-      threshold: 0.12
     }
   );
 
-  revealElements.forEach((element) => {
-    observer.observe(element);
-  });
-
-} else {
-
-  revealElements.forEach((element) => {
-    element.classList.add("visible");
-  });
-
 }
 
 
-// ---------------------------------------------------------
-// VERSION DATA
-// ---------------------------------------------------------
+/* ==========================================
+   REVEAL
+========================================== */
 
-async function loadVersionData() {
+function initReveal() {
 
-  try {
+  const targets =
+    document.querySelectorAll(
+      ".system-card,.world-stage,.stage,.companion,.community-ui,.download-inner"
+    );
 
-    const response = await fetch(
-      `version.json?t=${Date.now()}`,
+
+  const observer =
+    new IntersectionObserver(
+      entries => {
+
+        entries.forEach(
+          entry => {
+
+            if (
+              entry.isIntersecting
+            ) {
+
+              entry.target.animate(
+                [
+                  {
+                    opacity:0,
+                    transform:
+                      "translateY(35px)"
+                  },
+                  {
+                    opacity:1,
+                    transform:
+                      "translateY(0)"
+                  }
+                ],
+                {
+                  duration:800,
+                  easing:
+                    "cubic-bezier(.16,1,.3,1)",
+                  fill:"forwards"
+                }
+              );
+
+              observer.unobserve(
+                entry.target
+              );
+
+            }
+
+          }
+        );
+
+      },
       {
-        cache: "no-store"
+        threshold:.12
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Version file unavailable");
-    }
 
-    const data = await response.json();
+  targets.forEach(
+    target =>
+      observer.observe(target)
+  );
 
-    return {
-      ...FALLBACK,
-      ...data
-    };
-
-  } catch (error) {
-
-    console.warn(
-      "Using fallback release configuration.",
-      error
-    );
-
-    return FALLBACK;
-  }
 }
 
 
-// ---------------------------------------------------------
-// APPLY DOWNLOAD LINKS
-// ---------------------------------------------------------
+/* ==========================================
+   PARALLAX
+========================================== */
 
-async function configureDownloads() {
+function initParallax() {
 
-  const release = await loadVersionData();
+  if (
+    window.matchMedia(
+      "(pointer:coarse)"
+    ).matches
+  ) return;
 
-  const androidLinks =
-    document.querySelectorAll(
-      '[data-download="android"]'
-    );
 
-  const windowsLinks =
-    document.querySelectorAll(
-      '[data-download="windows"]'
-    );
-
-  const releaseLinks =
-    document.querySelectorAll(
-      '[data-release-link]'
+  const planet =
+    document.querySelector(
+      ".planet-system"
     );
 
 
-  androidLinks.forEach((link) => {
-    link.href = release.downloadUrl;
+  if (!planet) return;
+
+
+  window.addEventListener(
+    "mousemove",
+    event => {
+
+      const x =
+        event.clientX /
+        window.innerWidth -
+        .5;
+
+      const y =
+        event.clientY /
+        window.innerHeight -
+        .5;
+
+
+      planet.style.transform =
+        `translate3d(${x * 12}px,${y * 12}px,0)`;
+
+    }
+  );
+
+}
+
+
+/* ==========================================
+   SMOOTH SCROLL
+========================================== */
+
+function initSmoothScroll() {
+
+  document.querySelectorAll(
+    'a[href^="#"]'
+  ).forEach(link => {
+
+    link.addEventListener(
+      "click",
+      event => {
+
+        const id =
+          link.getAttribute("href");
+
+        if (
+          !id ||
+          id === "#"
+        ) return;
+
+
+        const target =
+          document.querySelector(id);
+
+        if (!target) return;
+
+
+        event.preventDefault();
+
+
+        target.scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+
+      }
+    );
+
+  });
+
+}
+
+
+/* ==========================================
+   DOWNLOAD / VERSION SYSTEM
+========================================== */
+
+async function initDownloads() {
+
+  const fallback = {
+
+    latestVersion:"1.0.0",
+
+    android:
+      "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-v1.0.0.apk",
+
+    windows:
+      "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-Windows-v1.0.0.zip"
+
+  };
+
+
+  let config =
+    fallback;
+
+
+  try {
+
+    const response =
+      await fetch(
+        "version.json?cache=" +
+        Date.now(),
+        {
+          cache:"no-store"
+        }
+      );
+
+
+    if (!response.ok)
+      throw new Error(
+        "version.json failed"
+      );
+
+
+    const remote =
+      await response.json();
+
+
+    config = {
+      ...fallback,
+      ...remote
+    };
+
+  } catch(error) {
+
+    console.warn(
+      "Using fallback release configuration."
+    );
+
+  }
+
+
+  document.querySelectorAll(
+    '[data-download="android"]'
+  ).forEach(link => {
+
+    link.href =
+      config.android ||
+      fallback.android;
+
   });
 
 
-  windowsLinks.forEach((link) => {
-    link.href = release.windowsUrl;
-  });
+  document.querySelectorAll(
+    '[data-download="windows"]'
+  ).forEach(link => {
 
+    link.href =
+      config.windows ||
+      fallback.windows;
 
-  releaseLinks.forEach((link) => {
-    link.href = release.releaseUrl;
   });
 
 
   document.querySelectorAll(
     "[data-version]"
-  ).forEach((element) => {
+  ).forEach(label => {
 
-    element.textContent =
-      `v${release.latestVersion}`;
+    label.textContent =
+      "v" +
+      String(
+        config.latestVersion
+      ).replace(/^v/i,"");
 
   });
 
 }
 
 
-// ---------------------------------------------------------
-// BUTTON RIPPLE
-// ---------------------------------------------------------
+/* ==========================================
+   WORLD STAGE INTERACTION
+========================================== */
 
-document.querySelectorAll(
-  ".primary-button, .secondary-button, .download-card"
-).forEach((button) => {
+function initStageInteraction() {
 
-  button.addEventListener("pointerdown", (event) => {
+  const stages =
+    document.querySelectorAll(
+      ".stage"
+    );
 
-    const rect =
-      button.getBoundingClientRect();
 
-    const ripple =
-      document.createElement("span");
+  const label =
+    document.querySelector(
+      ".world-label strong"
+    );
 
-    ripple.className = "ripple";
 
-    ripple.style.left =
-      `${event.clientX - rect.left}px`;
+  if (!stages.length)
+    return;
 
-    ripple.style.top =
-      `${event.clientY - rect.top}px`;
 
-    button.appendChild(ripple);
+  stages.forEach(stage => {
 
-    setTimeout(() => {
-      ripple.remove();
-    }, 650);
+    stage.addEventListener(
+      "mouseenter",
+      () => {
+
+        stages.forEach(
+          s =>
+            s.classList.remove(
+              "active"
+            )
+        );
+
+
+        stage.classList.add(
+          "active"
+        );
+
+
+        if (label) {
+
+          label.textContent =
+            stage
+              .querySelector("b")
+              .textContent;
+
+        }
+
+      }
+    );
 
   });
 
-});
+}
 
 
-// ---------------------------------------------------------
-// DOWNLOAD CONFIG
-// ---------------------------------------------------------
+/* ==========================================
+   MAGNETIC BUTTONS
+========================================== */
 
-configureDownloads();
+function initMagneticButtons() {
+
+  if (
+    window.matchMedia(
+      "(pointer:coarse)"
+    ).matches
+  ) return;
+
+
+  const buttons =
+    document.querySelectorAll(
+      ".btn,.nav-btn,.download-card"
+    );
+
+
+  buttons.forEach(button => {
+
+    button.addEventListener(
+      "mousemove",
+      event => {
+
+        const rect =
+          button.getBoundingClientRect();
+
+
+        const x =
+          event.clientX -
+          rect.left -
+          rect.width / 2;
+
+
+        const y =
+          event.clientY -
+          rect.top -
+          rect.height / 2;
+
+
+        button.style.transform =
+          `translate(${x * .08}px,${y * .08}px)`;
+
+      }
+    );
+
+
+    button.addEventListener(
+      "mouseleave",
+      () => {
+
+        button.style.transform =
+          "";
+
+      }
+    );
+
+  });
+
+}
