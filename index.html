@@ -400,6 +400,179 @@
       display: none !important;
     }
 
+
+
+    /* Premium update banner + separate platform downloads */
+    .update-card {
+      max-width: 920px;
+      margin: 0 auto 90px;
+      padding: 0;
+      border-radius: 28px;
+      border: 1px solid rgba(100, 255, 80, 0.24);
+      background: linear-gradient(145deg, rgba(70,255,60,.08), rgba(255,255,255,.025));
+      box-shadow: 0 0 55px rgba(60,255,50,.08), inset 0 0 35px rgba(255,255,255,.015);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+      animation: cardAppear .7s ease both;
+    }
+
+    .update-banner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 23px 28px;
+      background: linear-gradient(110deg, rgba(57,255,20,.12), rgba(57,255,20,.035), transparent);
+      overflow: hidden;
+    }
+
+    .update-banner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 15%, rgba(255,255,255,.10) 48%, transparent 72%);
+      transform: translateX(-110%);
+      animation: shine 4.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0%,55% { transform: translateX(-110%); }
+      80%,100% { transform: translateX(110%); }
+    }
+
+    .update-banner-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      min-width: 0;
+    }
+
+    .update-pulse {
+      width: 13px;
+      height: 13px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #39ff14;
+      box-shadow: 0 0 0 0 rgba(57,255,20,.45);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      70% { box-shadow: 0 0 0 13px rgba(57,255,20,0); }
+      100% { box-shadow: 0 0 0 0 rgba(57,255,20,0); }
+    }
+
+    .update-banner strong {
+      display: block;
+      color: #b6ffa7;
+      letter-spacing: 1.4px;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .update-banner span:not(.update-pulse) {
+      color: #899789;
+      font-size: 14px;
+    }
+
+    .update-banner-action {
+      flex: 0 0 auto;
+      padding: 10px 16px;
+      border: 1px solid rgba(140,255,120,.32);
+      border-radius: 999px;
+      background: rgba(57,255,20,.10);
+      color: #9dff8a !important;
+      font-weight: 900;
+      transition: .25s;
+    }
+
+    .update-banner:hover .update-banner-action {
+      transform: translateY(-2px);
+      background: rgba(57,255,20,.18);
+      box-shadow: 0 0 25px rgba(57,255,20,.14);
+    }
+
+    .download-panel {
+      padding: 32px;
+      text-align: center;
+      border-top: 1px solid rgba(120,255,100,.10);
+    }
+
+    .platform-downloads {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 14px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .platform-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      text-align: left;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      background: rgba(255,255,255,.025);
+      transition: .3s ease;
+    }
+
+    .platform-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(100,255,80,.25);
+      background: rgba(100,255,80,.055);
+      box-shadow: 0 15px 40px rgba(0,0,0,.22);
+    }
+
+    .platform-icon {
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 15px;
+      background: rgba(100,255,80,.08);
+      font-size: 27px;
+    }
+
+    .platform-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .platform-info strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+
+    .platform-info small {
+      display: block;
+      color: #788678;
+      margin-bottom: 10px;
+    }
+
+    .platform-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 13px;
+      border-radius: 10px;
+      background: #6cff47;
+      color: #041003 !important;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .platform-button.secondary {
+      background: rgba(108,255,71,.10);
+      color: #9dff8a !important;
+      border: 1px solid rgba(108,255,71,.25);
+    }
+
     /* Responsive */
 
     @media (max-width: 800px) {
@@ -429,8 +602,27 @@
       }
 
       .update-card {
+        padding: 0;
+      }
+
+      .update-banner {
+        align-items: flex-start;
+        padding: 20px;
+      }
+
+      .update-banner-action {
+        font-size: 12px;
+        padding: 9px 12px;
+      }
+
+      .download-panel {
         padding: 27px 20px;
       }
+
+      .platform-downloads {
+        grid-template-columns: 1fr;
+      }
+
     }
 
     @media (max-width: 480px) {
@@ -497,59 +689,61 @@
 
     <!-- NEW VERSION AVAILABLE -->
 
-    <section
-      id="download"
-      class="update-card"
-    >
+    <section id="download" class="update-card">
 
-      <div class="update-icon">🚀</div>
-
-      <div class="update-label">
-        NEW VERSION AVAILABLE
-      </div>
-
-      <h2>
-        FOCUSVERSE
-        <span
-          id="versionText"
-          class="version"
-        >
-          v1.1.0
-        </span>
-      </h2>
-
-      <p id="updateMessage">
-        A new version of FOCUSVERSE is available.
-        Update now to get the latest features, improvements
-        and bug fixes.
-      </p>
-
-      <div
-        id="loadingText"
-        class="loading"
-      >
-        Checking latest version...
-      </div>
-
-      <a
-        id="downloadButton"
-        class="download-button hidden"
-        href="#"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        ⬇️ Download v1.1.0
+      <a class="update-banner" href="#download-panel" aria-label="View latest FOCUSVERSE download">
+        <div class="update-banner-left">
+          <span class="update-pulse"></span>
+          <div>
+            <strong>✨ NEW VERSION AVAILABLE · <span id="bannerVersion">v1.1.0</span></strong>
+            <span>Tap here to see the latest FOCUSVERSE downloads.</span>
+          </div>
+        </div>
+        <span class="update-banner-action">View update ↓</span>
       </a>
 
-      <a
-        id="releaseLink"
-        class="release-link hidden"
-        href="#"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        View GitHub Release
-      </a>
+      <div id="download-panel" class="download-panel">
+        <div class="update-icon">🚀</div>
+        <div class="update-label">LATEST FOCUSVERSE RELEASE</div>
+
+        <h2>
+          FOCUSVERSE <span id="versionText" class="version">v1.1.0</span>
+        </h2>
+
+        <p id="updateMessage">
+          Download FOCUSVERSE for your platform. Android and Windows have separate downloads.
+        </p>
+
+        <div id="loadingText" class="loading">Checking latest version...</div>
+
+        <div class="platform-downloads">
+          <div class="platform-card">
+            <div class="platform-icon">🤖</div>
+            <div class="platform-info">
+              <strong>Android</strong>
+              <small>APK · Mobile</small>
+              <a id="androidDownloadButton" class="platform-button"
+                 href="https://github.com/panditji11029-hash/FOCUSVERSE/releases/download/v1.1.0/app-release.apk"
+                 target="_blank" rel="noopener noreferrer">Download APK</a>
+            </div>
+          </div>
+
+          <div class="platform-card">
+            <div class="platform-icon">🪟</div>
+            <div class="platform-info">
+              <strong>Windows</strong>
+              <small>ZIP · PC / Desktop</small>
+              <a id="windowsDownloadButton" class="platform-button secondary"
+                 href="https://github.com/panditji11029-hash/FOCUSVERSE/releases/download/v1.1.0/focusverse-windows.zip"
+                 target="_blank" rel="noopener noreferrer">Download Windows</a>
+            </div>
+          </div>
+        </div>
+
+        <a id="releaseLink" class="release-link hidden" href="#" target="_blank" rel="noopener noreferrer">
+          View GitHub Release
+        </a>
+      </div>
 
     </section>
 
@@ -672,6 +866,15 @@
     const versionText =
       document.getElementById("versionText");
 
+    const bannerVersion =
+      document.getElementById("bannerVersion");
+
+    const androidDownloadButton =
+      document.getElementById("androidDownloadButton");
+
+    const windowsDownloadButton =
+      document.getElementById("windowsDownloadButton");
+
     const downloadButton =
       document.getElementById("downloadButton");
 
@@ -703,11 +906,26 @@
       versionText.textContent =
         cleanVersion;
 
+      if (bannerVersion) {
+        bannerVersion.textContent = cleanVersion;
+      }
+
       downloadButton.textContent =
         "⬇️ Download " + cleanVersion;
 
       downloadButton.href =
         downloadUrl;
+
+      if (androidDownloadButton) {
+        androidDownloadButton.href = downloadUrl;
+      }
+
+      if (windowsDownloadButton) {
+        windowsDownloadButton.href =
+          "https://github.com/panditji11029-hash/FOCUSVERSE/releases/download/" +
+          cleanVersion +
+          "/focusverse-windows.zip";
+      }
 
       releaseLink.href =
         releaseUrl;
