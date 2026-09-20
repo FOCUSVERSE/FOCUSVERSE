@@ -1,8 +1,306 @@
-const FALLBACK={latestVersion:'1.1.0',downloadUrl:'https://github.com/panditji11029-hash/FOCUSVERSE/releases/download/v1.1.0/app-release.apk',windowsUrl:'https://github.com/panditji11029-hash/FOCUSVERSE/releases/tag/v1.1.0',releaseUrl:'https://github.com/panditji11029-hash/FOCUSVERSE/releases/tag/v1.1.0',releaseNotes:['Community with posts, reactions, comments and replies','Friends and real-time friend requests','Real-time Firestore social updates','Focus sounds and custom sound support','World progression, XP, missions and streaks']};
-const $=s=>document.querySelector(s);const $$=s=>[...document.querySelectorAll(s)];
-addEventListener('scroll',()=>{$('header').classList.toggle('scrolled',scrollY>20);$('#top').classList.toggle('show',scrollY>600)},{passive:true});$('#top').onclick=()=>scrollTo({top:0,behavior:'smooth'});
-$('#menu').onclick=()=>$('#mobile').classList.toggle('open');$$('#mobile a').forEach(a=>a.onclick=()=>$('#mobile').classList.remove('open'));
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');io.unobserve(e.target)}}),{threshold:.12});$$('.reveal').forEach(e=>io.observe(e));
-const c=$('#fx'),x=c.getContext('2d');let W,H,D,ps=[];function resize(){D=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*D;c.height=H*D;c.style.width=W+'px';c.style.height=H+'px';x.setTransform(D,0,0,D,0,0);ps=Array.from({length:Math.min(110,Math.floor(W/9))},()=>({x:Math.random()*W,y:Math.random()*H,r:.4+Math.random()*1.5,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.13,a:.1+Math.random()*.45,p:Math.random()*6.28}))}resize();addEventListener('resize',resize,{passive:true});function fx(){x.clearRect(0,0,W,H);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.p+=.008;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;x.fillStyle=`rgba(156,255,82,${p.a*(.65+.35*Math.sin(p.p))})`;x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fill()});requestAnimationFrame(fx)}requestAnimationFrame(fx);
-async function release(){try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;apply(await r.json())}catch(e){apply(FALLBACK)}}function apply(d){const v=String(d.latestVersion||FALLBACK.latestVersion).replace(/^v/,'');$('#version').textContent='LATEST RELEASE · v'+v;$('#rv').textContent='v'+v;$('#android').href=d.downloadUrl||FALLBACK.downloadUrl;$('#windows').href=d.windowsUrl||d.windowsDownloadUrl||FALLBACK.windowsUrl;$('#release').href=d.releaseUrl||FALLBACK.releaseUrl;const list=$('#notes');list.innerHTML='';(d.releaseNotes||FALLBACK.releaseNotes).slice(0,8).forEach(n=>{const li=document.createElement('li');li.textContent=n;list.appendChild(li)})}release();
-addEventListener('mousemove',e=>{const art=$('.hero-art');if(art&&innerWidth>900){const px=e.clientX/innerWidth-.5,py=e.clientY/innerHeight-.5;art.style.transform=`translate(${px*7}px,${py*5}px)`}},{passive:true});
+const FALLBACK = {
+  latestVersion: "1.0.0",
+
+  downloadUrl:
+    "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-v1.0.0.apk",
+
+  windowsUrl:
+    "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/download/v1.0.0/FOCUSVERSE-Windows-v1.0.0.zip",
+
+  releaseUrl:
+    "https://github.com/FOCUSVERSE/FOCUSVERSE/releases/tag/v1.0.0"
+};
+
+
+// ---------------------------------------------------------
+// CANVAS SPACE BACKGROUND
+// ---------------------------------------------------------
+
+const canvas = document.getElementById("spaceCanvas");
+
+if (canvas) {
+  const ctx = canvas.getContext("2d");
+
+  let width = 0;
+  let height = 0;
+
+  const particles = [];
+
+  const PARTICLE_COUNT = 120;
+
+  function resizeCanvas() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+
+  function createParticle() {
+    return {
+      x: Math.random() * width,
+      y: Math.random() * height,
+      radius: Math.random() * 1.6 + 0.2,
+      speed: Math.random() * 0.25 + 0.05,
+      drift: Math.random() * 0.5 - 0.25,
+      alpha: Math.random() * 0.7 + 0.15
+    };
+  }
+
+  function initializeParticles() {
+    particles.length = 0;
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push(createParticle());
+    }
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, width, height);
+
+    for (const particle of particles) {
+      particle.y -= particle.speed;
+      particle.x += particle.drift * 0.08;
+
+      if (particle.y < -10) {
+        particle.y = height + 10;
+      }
+
+      if (particle.x < -10) {
+        particle.x = width + 10;
+      }
+
+      if (particle.x > width + 10) {
+        particle.x = -10;
+      }
+
+      ctx.beginPath();
+
+      ctx.arc(
+        particle.x,
+        particle.y,
+        particle.radius,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fillStyle =
+        `rgba(145, 255, 0, ${particle.alpha})`;
+
+      ctx.fill();
+    }
+
+    requestAnimationFrame(drawParticles);
+  }
+
+  resizeCanvas();
+  initializeParticles();
+  drawParticles();
+
+  window.addEventListener("resize", () => {
+    resizeCanvas();
+    initializeParticles();
+  });
+}
+
+
+// ---------------------------------------------------------
+// SMOOTH SCROLL
+// ---------------------------------------------------------
+
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+
+  link.addEventListener("click", (event) => {
+
+    const targetId = link.getAttribute("href");
+
+    if (!targetId || targetId === "#") {
+      return;
+    }
+
+    const target = document.querySelector(targetId);
+
+    if (!target) {
+      return;
+    }
+
+    event.preventDefault();
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  });
+
+});
+
+
+// ---------------------------------------------------------
+// REVEAL ANIMATIONS
+// ---------------------------------------------------------
+
+const revealElements =
+  document.querySelectorAll(".section-reveal");
+
+if ("IntersectionObserver" in window) {
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+
+      entries.forEach((entry) => {
+
+        if (entry.isIntersecting) {
+
+          entry.target.classList.add("visible");
+
+          observer.unobserve(entry.target);
+        }
+
+      });
+
+    },
+    {
+      threshold: 0.12
+    }
+  );
+
+  revealElements.forEach((element) => {
+    observer.observe(element);
+  });
+
+} else {
+
+  revealElements.forEach((element) => {
+    element.classList.add("visible");
+  });
+
+}
+
+
+// ---------------------------------------------------------
+// VERSION DATA
+// ---------------------------------------------------------
+
+async function loadVersionData() {
+
+  try {
+
+    const response = await fetch(
+      `version.json?t=${Date.now()}`,
+      {
+        cache: "no-store"
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Version file unavailable");
+    }
+
+    const data = await response.json();
+
+    return {
+      ...FALLBACK,
+      ...data
+    };
+
+  } catch (error) {
+
+    console.warn(
+      "Using fallback release configuration.",
+      error
+    );
+
+    return FALLBACK;
+  }
+}
+
+
+// ---------------------------------------------------------
+// APPLY DOWNLOAD LINKS
+// ---------------------------------------------------------
+
+async function configureDownloads() {
+
+  const release = await loadVersionData();
+
+  const androidLinks =
+    document.querySelectorAll(
+      '[data-download="android"]'
+    );
+
+  const windowsLinks =
+    document.querySelectorAll(
+      '[data-download="windows"]'
+    );
+
+  const releaseLinks =
+    document.querySelectorAll(
+      '[data-release-link]'
+    );
+
+
+  androidLinks.forEach((link) => {
+    link.href = release.downloadUrl;
+  });
+
+
+  windowsLinks.forEach((link) => {
+    link.href = release.windowsUrl;
+  });
+
+
+  releaseLinks.forEach((link) => {
+    link.href = release.releaseUrl;
+  });
+
+
+  document.querySelectorAll(
+    "[data-version]"
+  ).forEach((element) => {
+
+    element.textContent =
+      `v${release.latestVersion}`;
+
+  });
+
+}
+
+
+// ---------------------------------------------------------
+// BUTTON RIPPLE
+// ---------------------------------------------------------
+
+document.querySelectorAll(
+  ".primary-button, .secondary-button, .download-card"
+).forEach((button) => {
+
+  button.addEventListener("pointerdown", (event) => {
+
+    const rect =
+      button.getBoundingClientRect();
+
+    const ripple =
+      document.createElement("span");
+
+    ripple.className = "ripple";
+
+    ripple.style.left =
+      `${event.clientX - rect.left}px`;
+
+    ripple.style.top =
+      `${event.clientY - rect.top}px`;
+
+    button.appendChild(ripple);
+
+    setTimeout(() => {
+      ripple.remove();
+    }, 650);
+
+  });
+
+});
+
+
+// ---------------------------------------------------------
+// DOWNLOAD CONFIG
+// ---------------------------------------------------------
+
+configureDownloads();
